@@ -23,8 +23,8 @@ jobs:
       - name: Install Railway CLI
         run: npm install -g @railway/cli
 
-      - name: Login to Railway (Token Auth)
-        run: railway login --token $RAILWAY_TOKEN
+      - name: Login to Railway (Token Auth - FIXED)
+        run: railway auth login --token=$RAILWAY_TOKEN
 
       - name: Deploy to Railway
         run: railway up --service railway-flask-backend --ci
