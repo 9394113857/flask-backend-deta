@@ -1,0 +1,48 @@
+name: Flask Railway CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Build Docker Image
+        run: docker build -t flask-app .
+
+      - name: Deploy to Railway
+        uses: railwayapp/cli-action@v1
+        with:
+          railwayToken: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: Send Email on Success
+        if: success()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: "Flask Railway Deployment Successful 🚀"
+          to: "practicesession3@gmail.com"
+          from: "Flask Deployment Bot"
+          body: "Your Flask project was deployed successfully on Railway.\n\nCommit Message: ${{ github.event.head_commit.message }}"
+
+      - name: Send Email on Failure
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: "Flask Railway Deployment FAILED ❌"
+          to: "practicesession3@gmail.com"
+          from: "Flask Deployment Bot"
+          body: "Your Flask deployment failed. Please check the GitHub Actions logs for details."
