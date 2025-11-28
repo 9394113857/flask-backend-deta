@@ -8,6 +8,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
 
     steps:
       - name: Checkout Code
@@ -22,7 +24,7 @@ jobs:
         run: npm install -g @railway/cli
 
       - name: Login to Railway
-        run: railway login --token ${{ secrets.RAILWAY_TOKEN }}
+        run: railway login
 
       - name: Deploy to Railway
         run: railway up --service railway-flask-backend --ci
