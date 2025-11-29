@@ -1,4 +1,4 @@
-name: Flask Railway CI/CD    
+name: Flask Railway CI/CD     
 
 on:
   push:
