@@ -1,0 +1,108 @@
+=========================================================
+HOW TO GET FEATURE BRANCH ON SYSTEM B (GIT GUIDE).txt
+=========================================================
+
+Goal:
+System A has a feature branch:
+    feature/sqlalchemy-migrations
+
+On System B, the branch does NOT exist yet.  
+These steps will download it and switch to it.
+
+---------------------------------------------------------
+1. OPEN TERMINAL ON SYSTEM B AND GO TO PROJECT FOLDER
+---------------------------------------------------------
+cd <path-to-your-project>
+
+Example:
+cd E:\Cloned\railway-flask-backend
+
+
+---------------------------------------------------------
+2. CHECK IF YOU HAVE A GIT REPOSITORY INITIALIZED
+---------------------------------------------------------
+git status
+
+If error: “not a git repository”
+Then you forgot to clone the project.
+
+Clone it:
+git clone <your-repo-url>
+
+
+---------------------------------------------------------
+3. FETCH ALL BRANCHES FROM GITHUB (IMPORTANT)
+---------------------------------------------------------
+git fetch --all
+
+Explanation:
+• Downloads all remote branches to System B
+• Does NOT merge anything
+• Prepares Git to see remote branches
+
+
+---------------------------------------------------------
+4. LIST REMOTE BRANCHES (CHECK IF FEATURE EXISTS REMOTELY)
+---------------------------------------------------------
+git branch -r
+
+Expected output:
+origin/main
+origin/feature/sqlalchemy-migrations   <-- important
+
+
+If you see this line, branch exists on GitHub.
+
+
+---------------------------------------------------------
+5. CREATE LOCAL BRANCH FROM REMOTE BRANCH
+---------------------------------------------------------
+git checkout -b feature/sqlalchemy-migrations origin/feature/sqlalchemy-migrations
+
+Explanation:
+• Creates local branch with same name
+• Tracks the remote branch
+• Switches to it automatically
+
+
+---------------------------------------------------------
+6. CONFIRM YOU ARE ON THE FEATURE BRANCH
+---------------------------------------------------------
+git branch
+
+Expected:
+* feature/sqlalchemy-migrations
+  main
+
+
+---------------------------------------------------------
+7. PULL LATEST UPDATES (OPTIONAL)
+---------------------------------------------------------
+git pull origin feature/sqlalchemy-migrations
+
+This ensures System B has the most recent commits.
+
+
+---------------------------------------------------------
+8. YOU ARE READY TO WORK
+---------------------------------------------------------
+Now you can:
+• run migrations
+• run backend
+• commit
+• push
+
+Exactly same workflow as System A.
+
+
+---------------------------------------------------------
+SUMMARY (SUPER SHORT VERSION)
+---------------------------------------------------------
+git fetch --all
+git checkout -b feature/sqlalchemy-migrations origin/feature/sqlalchemy-migrations
+git branch
+
+
+=========================================================
+END OF FILE
+=========================================================
