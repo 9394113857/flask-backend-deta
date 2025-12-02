@@ -10,7 +10,7 @@ from flask_jwt_extended import (
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 from config import Config
-import pytz   # 🔥 Added for timezone support (very important)
+import pytz   # timezone support
 
 # ----------------------------------------------------
 # APP INITIALIZATION
@@ -22,64 +22,20 @@ CORS(app)
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
 
-# ----------------------------------------------------
-# SERVER DEPLOYMENT TIME (UTC)
-# Railway servers run on UTC or EU region time
-# ----------------------------------------------------
-utc_now = datetime.now(pytz.utc)
-
-# Convert to IST
-india_tz = pytz.timezone("Asia/Kolkata")
-ist_now = utc_now.astimezone(india_tz)
-
-
-# ----------------------------------------------------
-# DATABASE MODELS
-# ----------------------------------------------------
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    password = db.Column(db.String(120), nullable=False)
-    name = db.Column(db.String(100))
-    email = db.Column(db.String(100), unique=True)
-    phone = db.Column(db.String(20), unique=True)
-    address = db.Column(db.String(255))
-
-
-# ----------------------------------------------------
-# UNIVERSAL ERROR HANDLER
-# ----------------------------------------------------
-def handle_error(e):
-    if isinstance(e, IntegrityError):
-        message = str(e.orig)
-
-        if "UNIQUE constraint failed" in message:
-            if "user.username" in message:
-                return {"error": "Username already exists"}, 400
-            if "user.email" in message:
-                return {"error": "Email already exists"}, 400
-            if "user.phone" in message:
-                return {"error": "Phone already exists"}, 400
-
-        return {"error": "Database integrity error", "details": message}, 400
-
-    if isinstance(e, SQLAlchemyError):
-        return {"error": "Database error", "details": str(e)}, 500
-
-    return {"error": "Unexpected server error", "details": str(e)}, 500
-
 
 # ----------------------------------------------------
 # HOME ROUTE — SHOW IST & UTC WITH FLAGS IN TABLE FORMAT
 # ----------------------------------------------------
 @app.route("/")
 def home():
-    # Refresh current times
+    # Get UTC time (Railway server time)
     utc_now = datetime.now(pytz.utc)
+
+    # Convert to India IST
     india_tz = pytz.timezone("Asia/Kolkata")
     ist_now = utc_now.astimezone(india_tz)
 
-    # Table output with S.No + Country + Flag + Time
+    # Table output
     time_table = [
         {
             "sno": 1,
@@ -100,6 +56,42 @@ def home():
         "deployment_table": time_table,
         "environment": os.environ.get("RAILWAY_ENVIRONMENT", "Local Machine")
     }
+
+
+# ----------------------------------------------------
+# DATABASE MODEL
+# ----------------------------------------------------
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(120), nullable=False)
+    name = db.Column(db.String(100))
+    email = db.Column(db.String(100), unique=True)
+    phone = db.Column(db.String(20), unique=True)
+    address = db.Column(db.String(255))
+
+
+# ----------------------------------------------------
+# ERROR HANDLER
+# ----------------------------------------------------
+def handle_error(e):
+    if isinstance(e, IntegrityError):
+        message = str(e.orig)
+
+        if "UNIQUE constraint failed" in message:
+            if "user.username" in message:
+                return {"error": "Username already exists"}, 400
+            if "user.email" in message:
+                return {"error": "Email already exists"}, 400
+            if "user.phone" in message:
+                return {"error": "Phone already exists"}, 400
+
+        return {"error": "Database integrity error", "details": message}, 400
+
+    if isinstance(e, SQLAlchemyError):
+        return {"error": "Database error", "details": str(e)}, 500
+
+    return {"error": "Unexpected server error", "details": str(e)}, 500
 
 
 # ----------------------------------------------------
