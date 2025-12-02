@@ -1,0 +1,237 @@
+=========================================
+POSTMAN TESTING GUIDE (FLASK BACKEND).txt
+=========================================
+
+This file contains all Postman steps required to fully test a Flask backend with:
+• SQLAlchemy
+• JWT authentication
+• Register / Login / Profile
+• Migrations-based database
+• Local + Railway endpoints
+
+----------------------------------------------------
+1. CREATING A NEW POSTMAN COLLECTION
+----------------------------------------------------
+1. Open Postman
+2. Click “Collections”
+3. Click “New Collection”
+4. Name it: "Flask Railway Backend API"
+5. Add folders:
+   - Auth
+   - User
+   - System
+
+----------------------------------------------------
+2. ADDING ENVIRONMENTS (Local + Production)
+----------------------------------------------------
+Create two environments:
+
+A) LOCAL ENVIRONMENT
+---------------------
+Name: Local Flask API
+Variables:
+  key: base_url
+  value: http://127.0.0.1:5000/api
+
+  key: token
+  value: (keep empty initially)
+
+B) RAILWAY ENVIRONMENT
+-----------------------
+Name: Railway Flask API
+Variables:
+  key: base_url
+  value: https://<your-railway-service>.up.railway.app/api
+
+  key: token
+  value: (will be auto-updated after login)
+
+
+----------------------------------------------------
+3. AUTH → REGISTER (POST)
+----------------------------------------------------
+Endpoint:
+POST {{base_url}}/register
+
+Body (raw JSON):
+{
+  "username": "raghu",
+  "password": "12345",
+  "name": "Raghu",
+  "email": "test@mail.com",
+  "phone": "9999999999",
+  "address": "Hyderabad"
+}
+
+Expected Status:
+201 Created
+
+Expected Response:
+{
+  "message": "Registered"
+}
+
+
+----------------------------------------------------
+4. AUTH → LOGIN (POST)
+----------------------------------------------------
+Endpoint:
+POST {{base_url}}/login
+
+Body:
+{
+  "username": "raghu",
+  "password": "12345"
+}
+
+Expected Status:
+200 OK
+
+Expected Response:
+{
+  "token": "<JWT_TOKEN>"
+}
+
+
+----------------------------------------------------
+5. SAVE TOKEN AUTOMATICALLY IN POSTMAN
+----------------------------------------------------
+In the LOGIN request, click tab = “Tests”
+
+Paste this:
+
+---------------------------------------
+let response = pm.response.json();
+pm.environment.set("token", response.token);
+---------------------------------------
+
+After running login:
+- The JWT token will be auto-saved into the environment
+- Can be reused for all authenticated endpoints
+
+
+----------------------------------------------------
+6. AUTH → PROFILE (GET)
+----------------------------------------------------
+Endpoint:
+GET {{base_url}}/profile
+
+Headers:
+Authorization: Bearer {{token}}
+
+Expected Status:
+200 OK
+
+Expected Response:
+{
+  "id": 1,
+  "username": "raghu",
+  "name": "Raghu",
+  "email": "test@mail.com",
+  "phone": "9999999999",
+  "address": "Hyderabad"
+}
+
+
+----------------------------------------------------
+7. NEGATIVE TEST CASES
+----------------------------------------------------
+
+A) Login with wrong password
+-----------------------------
+{
+  "username": "raghu",
+  "password": "wrong"
+}
+Expected Response:
+401 Unauthorized
+
+B) Profile without token
+------------------------
+Remove Authorization header
+Expected Response:
+401 Token missing / invalid
+
+C) Duplicate Username
+---------------------
+POST /register AGAIN with same username
+Expected:
+400 Username exists
+
+D) Invalid token
+----------------
+Set token = "abcd"
+Expected:
+401 Invalid Token
+
+
+----------------------------------------------------
+8. TEST COLLECTION STRUCTURE (RECOMMENDED)
+----------------------------------------------------
+
+Flask Railway Backend API
+│
+├── Auth
+│    ├── POST Register
+│    ├── POST Login
+│    └── GET Profile
+│
+└── User
+     (future APIs: update, delete, list, etc.)
+
+
+----------------------------------------------------
+9. RUNNING COLLECTION USING RUNNER (POSTMAN)
+----------------------------------------------------
+1. Click "Runner"
+2. Choose Collection: Flask Railway Backend API
+3. Choose Environment: Local Flask API
+4. Click "Run"
+
+You will see:
+- Pass/Fail for each test
+- Response times
+- Status codes
+
+
+----------------------------------------------------
+10. SAMPLE TEST SCRIPTS FOR ASSERTIONS
+----------------------------------------------------
+
+A) Check status code:
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+
+B) Check if token exists:
+pm.test("Token present", function () {
+    pm.expect(pm.response.json().token).to.exist;
+});
+
+C) Check if JSON property exists:
+pm.test("Username exists", function () {
+    pm.expect(pm.response.json()).to.have.property("username");
+});
+
+
+----------------------------------------------------
+11. FINAL TESTING CHECKLIST
+----------------------------------------------------
+
+✔ Environment variables configured  
+✔ base_url set correctly  
+✔ token auto-saved  
+✔ Register works  
+✔ Login works  
+✔ Profile works  
+✔ Token validation works  
+✔ DB migrations applied  
+✔ Local + Railway URLs tested  
+✔ Both environments switchable  
+✔ Assertions added  
+✔ Collection Runner tested  
+
+
+====================================================
+END OF FILE
+====================================================

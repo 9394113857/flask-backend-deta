@@ -1,0 +1,117 @@
+===============================
+FLASK MIGRATIONS EXPLAINED.txt
+===============================
+
+This file explains what happens during:
+1) flask db init
+2) flask db migrate
+3) flask db upgrade
+
+
+======================================
+1) COMMAND: flask db init
+======================================
+
+WHAT THIS DOES:
+• Initializes the Alembic migration system for your project.
+• Sets up everything needed to track database schema changes.
+
+WHAT GETS CREATED:
+A new folder named "migrations/" with:
+  - alembic.ini           → migration system config
+  - script.py.mako        → template used for generating scripts
+  - README                → basic description
+  - versions/             → folder where migration scripts will live
+
+WHY THIS IS IMPORTANT:
+This prepares your project for version-controlled database migrations.
+It does NOT create tables or modify the database yet.
+
+YOUR TERMINAL OUTPUT MEANS:
+"Creating directory ... done"
+= Migration system initialized successfully.
+
+
+======================================
+2) COMMAND: flask db migrate -m "initial tables"
+======================================
+
+WHAT THIS DOES:
+• Scans all SQLAlchemy models in your project.
+• Detects any new tables, columns, or changes.
+• Generates a migration file in migrations/versions/.
+
+WHAT HAPPENED HERE:
+• Flask detected your "User" model.
+• A migration file was generated: <hash>_initial_tables.py
+  Example path:
+      migrations/versions/58ec4d7704cb_initial_tables.py
+
+IMPORTANT:
+This ONLY creates a migration file.
+It does NOT write anything to your actual database yet.
+
+WHY THIS STEP MATTERS:
+This step creates a versioned script that "describes" how to update the DB.
+
+
+======================================
+3) COMMAND: flask db upgrade
+======================================
+
+WHAT THIS DOES:
+• Applies the migration script to the actual database.
+• Creates tables inside the SQLite DB file ("app.db").
+• Records the current migration version inside the DB.
+
+WHAT HAPPENED HERE:
+• Database file "app.db" was created automatically.
+• The "users" table was created based on your models.
+• Alembic recorded that the schema is now at revision 58ec4d7704cb.
+
+YOUR TERMINAL OUTPUT:
+"Running upgrade -> 58ec4d7704cb, initial tables"
+= Migration applied successfully.
+
+
+======================================
+FINAL RESULT AFTER ALL 3 COMMANDS:
+======================================
+
+You now have:
+
+1) app.db
+   → Your SQLite database automatically created.
+
+2) users table
+   → Created inside app.db based on models.py.
+
+3) migrations/ folder
+   → Fully working migration system for future changes.
+
+4) migrations/versions/<hash>_initial_tables.py
+   → Your first migration file (initial schema version).
+
+
+======================================
+SUMMARY IN ONE LINE:
+======================================
+
+flask db init     = initialize migrations system
+flask db migrate  = create migration script from models
+flask db upgrade  = apply migration and create tables in database
+
+
+======================================
+NOTES FOR FUTURE MODEL CHANGES:
+======================================
+
+When you modify or add models, run:
+
+flask db migrate -m "updated schema"
+flask db upgrade
+
+This will update the database without losing data.
+
+
+END OF FILE

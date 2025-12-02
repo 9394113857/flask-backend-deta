@@ -1,0 +1,59 @@
+py -m venv env
+./env/scripts/activate
+
+
+1️⃣ Install dependencies
+pip install -r requirements.txt
+
+
+✔ Fix: Set FLASK_APP environment variable
+Windows PowerShell
+
+Run:
+$env:FLASK_APP = "run.py"
+
+flask run
+
+
+Windows CMD:
+set FLASK_APP=run.py
+
+macOS / Linux:
+export FLASK_APP=run.py
+
+
+
+2️⃣ Initialize migration folder
+flask db init
+
+3️⃣ Create first migration
+flask db migrate -m "initial tables"
+
+4️⃣ Apply migration → creates SQLite DB file automatically
+flask db upgrade
+
+🎉 Now app.db is created and your tables are installed.
+
+🌀 WHAT HAPPENS ON FIRST RUN?
+✔ flask db init
+
+Creates migrations folder.
+
+✔ flask db migrate
+
+Reads models, creates migration script.
+
+✔ flask db upgrade
+
+Creates SQLite DB + tables.
+
+Your Flask server will now run normally.
+
+🔁 FUTURE: MODIFY MODELS, MAKE NEW MIGRATION
+
+If you change models:
+flask db migrate -m "updated user model"
+flask db upgrade
+💥 All tables update automatically
+💥 No manual SQL
+💥 CI/CD-ready

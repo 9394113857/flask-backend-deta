@@ -1,5 +1,42 @@
+# ------------------------------------------------------
+# PYTHON CACHE FILES
+# ------------------------------------------------------
 __pycache__/
 *.pyc
-.env
+
+# ------------------------------------------------------
+# VIRTUAL ENVIRONMENT FOLDERS
+# ------------------------------------------------------
 venv/
 env/
+.venv/
+ENV/
+
+# ------------------------------------------------------
+# ENVIRONMENT VARIABLES (DO NOT PUSH SECRETS)
+# ------------------------------------------------------
+.env
+
+# ------------------------------------------------------
+# FLASK INSTANCE FILES (LOCAL ONLY)
+# ------------------------------------------------------
+instance/
+app.db          # SQLite database file (local only)
+
+# ------------------------------------------------------
+# EDITORS / OS FILES
+# ------------------------------------------------------
+.vscode/
+.idea/
+.DS_Store
+
+# ------------------------------------------------------
+# MIGRATIONS - IMPORTANT NOTE:
+# ------------------------------------------------------
+# DO NOT IGNORE MIGRATIONS FOR CI/CD OR TEAM WORK
+# Flask-Migrate needs migration scripts to deploy schema.
+#
+# So we DO NOT ignore:
+#    migrations/
+#
+# If you ignored this earlier, REMOVE from .gitignore now.

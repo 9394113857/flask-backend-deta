@@ -3,25 +3,64 @@ name: Flask Railway CI/CD
 on:
   push:
     branches:
-      - main
+      - main   # Production branch
 
 jobs:
   deploy:
+    name: Deploy Flask Backend to Railway
     runs-on: ubuntu-latest
 
+    env:
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
     steps:
+      # ------------------------------------------------------
+      # 1️⃣ CHECKOUT CODE
+      # ------------------------------------------------------
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Build Docker Image
-        run: docker build -t flask-app .
-
-      - name: Deploy to Railway
-        uses: railwayapp/cli-action@v1
+      # ------------------------------------------------------
+      # 2️⃣ SET UP PYTHON (Recommended for Flask Projects)
+      # ------------------------------------------------------
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          railwayToken: ${{ secrets.RAILWAY_TOKEN }}
+          python-version: "3.11"
 
-      - name: Send Email on Success
+      # ------------------------------------------------------
+      # 3️⃣ INSTALL DEPENDENCIES
+      # ------------------------------------------------------
+      - name: Install Python Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # ------------------------------------------------------
+      # 4️⃣ RUN DATABASE MIGRATIONS (Flask-Migrate)
+      # ------------------------------------------------------
+      - name: Run DB Migrations
+        run: |
+          flask db upgrade
+
+      # ------------------------------------------------------
+      # 5️⃣ INSTALL RAILWAY CLI
+      # ------------------------------------------------------
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      # ------------------------------------------------------
+      # 6️⃣ DEPLOY TO RAILWAY
+      # ------------------------------------------------------
+      - name: Deploy to Railway
+        run: |
+          echo "Deploying to Railway..."
+          railway up --service railway-flask-backend --ci
+
+      # ------------------------------------------------------
+      # 7️⃣ EMAIL NOTIFICATION — SUCCESS
+      # ------------------------------------------------------
+      - name: Email Notification (SUCCESS)
         if: success()
         uses: dawidd6/action-send-mail@v3
         with:
@@ -29,12 +68,18 @@ jobs:
           server_port: 587
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
-          subject: "Flask Railway Deployment Successful 🚀"
+          subject: "🚀 Flask Railway Deployment Successful"
           to: "practicesession3@gmail.com"
-          from: "Flask Deployment Bot"
-          body: "Your Flask project was deployed successfully on Railway.\n\nCommit Message: ${{ github.event.head_commit.message }}"
+          from: "Flask CI/CD Bot"
+          body: |
+            🎉 Deployment was successful!
+            Commit Message: ${{ github.event.head_commit.message }}
+            Time: ${{ github.event.head_commit.timestamp }}
 
-      - name: Send Email on Failure
+      # ------------------------------------------------------
+      # 8️⃣ EMAIL NOTIFICATION — FAILURE
+      # ------------------------------------------------------
+      - name: Email Notification (FAILURE)
         if: failure()
         uses: dawidd6/action-send-mail@v3
         with:
@@ -42,7 +87,9 @@ jobs:
           server_port: 587
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
-          subject: "Flask Railway Deployment FAILED ❌"
+          subject: "❌ Flask Railway Deployment FAILED"
           to: "practicesession3@gmail.com"
-          from: "Flask Deployment Bot"
-          body: "Your Flask deployment failed. Please check the GitHub Actions logs for details."
+          from: "Flask CI/CD Bot"
+          body: |
+            ❌ Deployment failed.
+            View logs in GitHub Actions for details.

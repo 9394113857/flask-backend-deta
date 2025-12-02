@@ -1,0 +1,1 @@
+"run.py","config.py",".env","requirements.txt","app","app\__init__.py","app\extensions.py","app\models.py","app\routes","app\routes\auth.py" | ForEach-Object { if (Test-Path $_) { "$_ ✔ exists" } else { "$_ ❌ MISSING" } }

@@ -1,0 +1,208 @@
+================================
+curl-commands-windows.txt
+================================
+
+This file contains all commonly used Windows cURL commands.
+These commands work in:
+• Windows CMD
+• Windows PowerShell
+• VSCode terminal (PowerShell)
+• Git Bash (with slight differences)
+
+--------------------------------
+NOTE ABOUT QUOTES ON WINDOWS:
+--------------------------------
+PowerShell: Use single quotes around JSON keys and values.
+CMD:        Use double quotes but escape inner quotes with backslash.
+
+Example:
+PowerShell:
+  curl -X GET 'http://localhost:5000/api'
+
+CMD:
+  curl -X GET "http://localhost:5000/api"
+
+--------------------------------
+1. BASIC GET REQUEST
+--------------------------------
+PowerShell:
+curl -X GET 'http://localhost:5000/api'
+
+CMD:
+curl -X GET "http://localhost:5000/api"
+
+
+--------------------------------
+2. GET WITH HEADERS
+--------------------------------
+curl -X GET "http://localhost:5000/api" ^
+     -H "Accept: application/json"
+
+
+--------------------------------
+3. POST WITH JSON BODY
+--------------------------------
+PowerShell:
+curl -X POST 'http://localhost:5000/api/register' `
+     -H 'Content-Type: application/json' `
+     -d '{"username":"raghu","password":"12345"}'
+
+CMD:
+curl -X POST "http://localhost:5000/api/register" ^
+     -H "Content-Type: application/json" ^
+     -d "{\"username\":\"raghu\",\"password\":\"12345\"}"
+
+
+--------------------------------
+4. POST (LOGIN) WITH JSON
+--------------------------------
+PowerShell:
+curl -X POST 'http://localhost:5000/api/login' `
+     -H 'Content-Type: application/json' `
+     -d '{"username":"raghu","password":"12345"}'
+
+CMD:
+curl -X POST "http://localhost:5000/api/login" ^
+     -H "Content-Type: application/json" ^
+     -d "{\"username\":\"raghu\",\"password\":\"12345\"}"
+
+
+--------------------------------
+5. AUTH TOKEN REQUEST (JWT)
+--------------------------------
+PowerShell:
+curl -X GET 'http://localhost:5000/api/profile' `
+     -H "Authorization: Bearer <TOKEN>"
+
+CMD:
+curl -X GET "http://localhost:5000/api/profile" ^
+     -H "Authorization: Bearer <TOKEN>"
+
+
+--------------------------------
+6. PUT REQUEST (UPDATE DATA)
+--------------------------------
+PowerShell:
+curl -X PUT 'http://localhost:5000/api/user/1' `
+     -H 'Content-Type: application/json' `
+     -d '{"name":"Updated Name"}'
+
+CMD:
+curl -X PUT "http://localhost:5000/api/user/1" ^
+     -H "Content-Type: application/json" ^
+     -d "{\"name\":\"Updated Name\"}"
+
+
+--------------------------------
+7. DELETE REQUEST
+--------------------------------
+PowerShell:
+curl -X DELETE 'http://localhost:5000/api/user/1'
+
+CMD:
+curl -X DELETE "http://localhost:5000/api/user/1"
+
+
+--------------------------------
+8. SEND MULTIPLE HEADERS
+--------------------------------
+curl -X GET "http://localhost:5000/api" ^
+     -H "Accept: application/json" ^
+     -H "x-access-token: <TOKEN>"
+
+
+--------------------------------
+9. DOWNLOAD A FILE USING CURL
+--------------------------------
+curl -o output.zip "https://example.com/file.zip"
+
+Explanation:
+-o output.zip  → tells curl to save output to a file
+
+
+--------------------------------
+10. UPLOAD A FILE (multipart/form-data)
+--------------------------------
+PowerShell:
+curl -X POST 'http://localhost:5000/api/upload' `
+     -F "file=@C:\path\to\file.txt"
+
+CMD:
+curl -X POST "http://localhost:5000/api/upload" ^
+     -F "file=@C:\path\to\file.txt"
+
+
+--------------------------------
+11. SEND FORM DATA (application/x-www-form-urlencoded)
+--------------------------------
+PowerShell:
+curl -X POST 'http://localhost:5000/api/login' `
+     -d "username=raghu&password=12345"
+
+CMD:
+curl -X POST "http://localhost:5000/api/login" ^
+     -d "username=raghu&password=12345"
+
+
+--------------------------------
+12. TEST IF SERVER IS RUNNING
+--------------------------------
+curl http://localhost:5000/
+
+
+--------------------------------
+13. VERBOSE MODE (SHOW FULL DETAILS)
+--------------------------------
+curl -v "http://localhost:5000/api"
+
+
+--------------------------------
+14. FOLLOW REDIRECTS
+--------------------------------
+curl -L "http://example.com"
+
+
+--------------------------------
+15. SAVE RESPONSE + HEADERS
+--------------------------------
+curl -i "http://localhost:5000/api"
+
+
+--------------------------------
+16. SEND CUSTOM USER-AGENT
+--------------------------------
+curl -A "MyTestClient" "http://localhost:5000/api"
+
+
+--------------------------------
+17. CHECK ONLY RESPONSE STATUS CODE
+--------------------------------
+PowerShell:
+curl -o NUL -w "%{http_code}" "http://localhost:5000/api"
+
+CMD:
+curl -o NUL -w "%{http_code}" "http://localhost:5000/api"
+
+
+--------------------------------
+18. JSON PRETTY OUTPUT (PowerShell Only)
+--------------------------------
+curl http://localhost:5000/api | ConvertFrom-Json | ConvertTo-Json -Depth 10
+
+
+--------------------------------
+19. TEST AUTH WITH BEARER TOKEN
+--------------------------------
+curl -X GET "http://localhost:5000/api/profile" ^
+     -H "Authorization: Bearer <TOKEN>"
+
+
+--------------------------------
+20. CHECK CORS HEADERS
+--------------------------------
+curl -I "http://localhost:5000/api"
+
+
+================================
+END OF FILE
+================================
