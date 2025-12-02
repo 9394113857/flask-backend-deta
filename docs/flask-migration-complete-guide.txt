@@ -1,0 +1,160 @@
+==============================================================
+FLASK MIGRATIONS — COMPLETE GUIDE (ALL SYSTEMS + ALL FLOWS)
+==============================================================
+
+This file explains EVERYTHING about running migrations on:
+
+• Same system
+• Other systems (System A → System B)
+• Other feature branches
+• Production (Railway)
+• CI/CD pipeline
+• After merging into main
+• Local development
+
+Use this as your reference for ALL migration operations.
+
+--------------------------------------------------------------
+SECTION 1: WHAT "flask db upgrade" DOES
+--------------------------------------------------------------
+
+The command:
+
+    flask db upgrade
+
+• Applies the migrations ONCE
+• Creates tables/columns
+• Updates the database to the latest schema
+• Does nothing extra if no new migrations exist
+• Is SAFE to run multiple times
+
+Alembic stores the database version internally, so it knows exactly
+which migrations are already applied.
+
+--------------------------------------------------------------
+SECTION 2: RUNNING "upgrade" MULTIPLE TIMES
+--------------------------------------------------------------
+
+1) First run:
+   flask db upgrade
+   → Applies migration
+   → Creates app.db
+   → Creates users table
+   → Revision applied (example: 58ec4d7704cb)
+
+2) Second run:
+   flask db upgrade
+   → Database already at latest version
+   → No new migration
+   → Skips without error
+
+3) Third run:
+   flask db upgrade
+   → Same behavior
+   → No work needed
+
+This is normal and correct behavior.
+
+--------------------------------------------------------------
+SECTION 3: RULES FOR MIGRATIONS (VERY IMPORTANT)
+--------------------------------------------------------------
+
+• Run `flask db init` → ONLY ONCE for entire project
+• Run `flask db migrate` → ONLY when schema changes
+• Run `flask db upgrade` → EVERY TIME you pull new migrations
+
+--------------------------------------------------------------
+SECTION 4: WHAT TO DO ON SYSTEM A (MAIN DEVELOPMENT SYSTEM)
+--------------------------------------------------------------
+
+WORKFLOW:
+1. Modify models.py
+2. Run:
+       flask db migrate -m "message"
+3. Run:
+       flask db upgrade
+4. Commit and push:
+       git add .
+       git commit -m "Updated schema"
+       git push origin feature/sqlalchemy-migrations
+
+--------------------------------------------------------------
+SECTION 5: WHAT TO DO ON SYSTEM B (SECOND MACHINE)
+--------------------------------------------------------------
+
+After pulling the feature branch:
+
+1. Activate environment
+2. Set Flask app:
+       $env:FLASK_APP = "run.py"
+3. Run:
+       flask db upgrade
+
+System B does NOT run:
+• flask db init
+• flask db migrate
+
+Because those were already done on System A.
+
+--------------------------------------------------------------
+SECTION 6: WHAT HAPPENS AFTER MERGING INTO MAIN
+--------------------------------------------------------------
+
+When merging feature → main:
+
+Everyone else who pulls main MUST run:
+
+       flask db upgrade
+
+Why?
+Because they need their local DB schema to match the new changes.
+
+--------------------------------------------------------------
+SECTION 7: WHAT HAPPENS IN CI/CD (RAILWAY)
+--------------------------------------------------------------
+
+CI/CD pipeline should always include:
+
+       flask db upgrade
+
+This ensures:
+• Production database is updated
+• New tables/columns appear automatically
+
+--------------------------------------------------------------
+SECTION 8: WHAT TO DO IF SCHEMA CHANGES IN FUTURE
+--------------------------------------------------------------
+
+If you add new fields in models.py:
+
+Example:
+    phone = db.Column(db.String(20))
+
+RUN:
+1. flask db migrate -m "Added phone column"
+2. flask db upgrade
+
+Then:
+3. git add .
+4. git commit
+5. git push
+
+All teammates and CI/CD will automatically pick this update.
+
+--------------------------------------------------------------
+SECTION 9: SUMMARY (SHORT VERSION)
+--------------------------------------------------------------
+
+flask db init        → one time only (never again)
+flask db migrate     → only when models change
+flask db upgrade     → always after pulling new code (safe to repeat)
+
+--------------------------------------------------------------
+SECTION 10: SUPER SHORT SUMMARY (1 LINE)
+--------------------------------------------------------------
+
+"upgrade" applies migrations if needed. If already applied → does nothing. Works on all systems, always safe.
+
+--------------------------------------------------------------
+END OF FILE
+==============================================================

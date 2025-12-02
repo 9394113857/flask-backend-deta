@@ -1,208 +1,245 @@
-================================
-curl-commands-windows.txt
-================================
+=========================================================
+FLASK API — COMPLETE WINDOWS cURL TEST SUITE (FINAL MASTER)
+CMD + POWERSHELL + TOKEN + EXPECTED OUTPUTS
+=========================================================
 
-This file contains all commonly used Windows cURL commands.
-These commands work in:
-• Windows CMD
-• Windows PowerShell
-• VSCode terminal (PowerShell)
-• Git Bash (with slight differences)
+BASE URL:
+  http://127.0.0.1:5000/api
 
---------------------------------
-NOTE ABOUT QUOTES ON WINDOWS:
---------------------------------
-PowerShell: Use single quotes around JSON keys and values.
-CMD:        Use double quotes but escape inner quotes with backslash.
-
-Example:
-PowerShell:
-  curl -X GET 'http://localhost:5000/api'
+=========================================================
+0. CHECK USERS LIST (BEGINNING CHECK)
+=========================================================
 
 CMD:
-  curl -X GET "http://localhost:5000/api"
+curl "http://127.0.0.1:5000/api/users"
 
---------------------------------
-1. BASIC GET REQUEST
---------------------------------
-PowerShell:
-curl -X GET 'http://localhost:5000/api'
+POWERSHELL:
+curl 'http://127.0.0.1:5000/api/users'
 
-CMD:
-curl -X GET "http://localhost:5000/api"
+EXPECTED:
+[]
 
-
---------------------------------
-2. GET WITH HEADERS
---------------------------------
-curl -X GET "http://localhost:5000/api" ^
-     -H "Accept: application/json"
-
-
---------------------------------
-3. POST WITH JSON BODY
---------------------------------
-PowerShell:
-curl -X POST 'http://localhost:5000/api/register' `
-     -H 'Content-Type: application/json' `
-     -d '{"username":"raghu","password":"12345"}'
+=========================================================
+1. CHECK SERVER HEALTH
+=========================================================
 
 CMD:
-curl -X POST "http://localhost:5000/api/register" ^
-     -H "Content-Type: application/json" ^
-     -d "{\"username\":\"raghu\",\"password\":\"12345\"}"
+curl "http://127.0.0.1:5000/api/"
 
+POWERSHELL:
+curl 'http://127.0.0.1:5000/api/'
 
---------------------------------
-4. POST (LOGIN) WITH JSON
---------------------------------
-PowerShell:
-curl -X POST 'http://localhost:5000/api/login' `
-     -H 'Content-Type: application/json' `
-     -d '{"username":"raghu","password":"12345"}'
+EXPECTED:
+{"message":"Flask API running with migrations"}
 
-CMD:
-curl -X POST "http://localhost:5000/api/login" ^
-     -H "Content-Type: application/json" ^
-     -d "{\"username\":\"raghu\",\"password\":\"12345\"}"
-
-
---------------------------------
-5. AUTH TOKEN REQUEST (JWT)
---------------------------------
-PowerShell:
-curl -X GET 'http://localhost:5000/api/profile' `
-     -H "Authorization: Bearer <TOKEN>"
+=========================================================
+2. REGISTER USER
+=========================================================
 
 CMD:
-curl -X GET "http://localhost:5000/api/profile" ^
-     -H "Authorization: Bearer <TOKEN>"
+curl -X POST "http://127.0.0.1:5000/api/register" ^
+  -H "Content-Type: application/json" ^
+  -d "{\"username\":\"raghu\",\"password\":\"12345\",\"name\":\"Raghu\",\"email\":\"raghu@test.com\",\"phone\":\"9999999999\",\"address\":\"Hyderabad\"}"
 
+POWERSHELL:
+curl -X POST 'http://127.0.0.1:5000/api/register' `
+  -H 'Content-Type: application/json' `
+  -d '{"username":"raghu","password":"12345","name":"Raghu","email":"raghu@test.com","phone":"9999999999","address":"Hyderabad"}'
 
---------------------------------
-6. PUT REQUEST (UPDATE DATA)
---------------------------------
-PowerShell:
-curl -X PUT 'http://localhost:5000/api/user/1' `
-     -H 'Content-Type: application/json' `
-     -d '{"name":"Updated Name"}'
+EXPECTED:
+{"message":"Registered successfully"}
 
-CMD:
-curl -X PUT "http://localhost:5000/api/user/1" ^
-     -H "Content-Type: application/json" ^
-     -d "{\"name\":\"Updated Name\"}"
-
-
---------------------------------
-7. DELETE REQUEST
---------------------------------
-PowerShell:
-curl -X DELETE 'http://localhost:5000/api/user/1'
+=========================================================
+3. LOGIN → GET TOKEN
+=========================================================
 
 CMD:
-curl -X DELETE "http://localhost:5000/api/user/1"
+curl -X POST "http://127.0.0.1:5000/api/login" ^
+  -H "Content-Type: application/json" ^
+  -d "{\"username\":\"raghu\",\"password\":\"12345\"}"
 
+POWERSHELL:
+curl -X POST 'http://127.0.0.1:5000/api/login' `
+  -H 'Content-Type: application/json' `
+  -d '{"username":"raghu","password":"12345"}'
 
---------------------------------
-8. SEND MULTIPLE HEADERS
---------------------------------
-curl -X GET "http://localhost:5000/api" ^
-     -H "Accept: application/json" ^
-     -H "x-access-token: <TOKEN>"
+EXPECTED:
+{"access_token":"<TOKEN>"}
 
-
---------------------------------
-9. DOWNLOAD A FILE USING CURL
---------------------------------
-curl -o output.zip "https://example.com/file.zip"
-
-Explanation:
--o output.zip  → tells curl to save output to a file
-
-
---------------------------------
-10. UPLOAD A FILE (multipart/form-data)
---------------------------------
-PowerShell:
-curl -X POST 'http://localhost:5000/api/upload' `
-     -F "file=@C:\path\to\file.txt"
+SAVE TOKEN FOR NEXT STEPS:
 
 CMD:
-curl -X POST "http://localhost:5000/api/upload" ^
-     -F "file=@C:\path\to\file.txt"
+set TOKEN=<TOKEN_VALUE>
 
+POWERSHELL:
+$env:TOKEN="<TOKEN_VALUE>"
 
---------------------------------
-11. SEND FORM DATA (application/x-www-form-urlencoded)
---------------------------------
-PowerShell:
-curl -X POST 'http://localhost:5000/api/login' `
-     -d "username=raghu&password=12345"
+=========================================================
+4. GET PROFILE (AUTH REQUIRED)
+=========================================================
 
 CMD:
-curl -X POST "http://localhost:5000/api/login" ^
-     -d "username=raghu&password=12345"
+curl -X GET "http://127.0.0.1:5000/api/profile" ^
+  -H "Authorization: Bearer %TOKEN%"
 
+POWERSHELL:
+curl -X GET 'http://127.0.0.1:5000/api/profile' `
+  -H "Authorization: Bearer $env:TOKEN"
 
---------------------------------
-12. TEST IF SERVER IS RUNNING
---------------------------------
-curl http://localhost:5000/
+EXPECTED:
+{
+  "id":1,
+  "username":"raghu",
+  "name":"Raghu",
+  "email":"raghu@test.com",
+  "phone":"9999999999",
+  "address":"Hyderabad"
+}
 
-
---------------------------------
-13. VERBOSE MODE (SHOW FULL DETAILS)
---------------------------------
-curl -v "http://localhost:5000/api"
-
-
---------------------------------
-14. FOLLOW REDIRECTS
---------------------------------
-curl -L "http://example.com"
-
-
---------------------------------
-15. SAVE RESPONSE + HEADERS
---------------------------------
-curl -i "http://localhost:5000/api"
-
-
---------------------------------
-16. SEND CUSTOM USER-AGENT
---------------------------------
-curl -A "MyTestClient" "http://localhost:5000/api"
-
-
---------------------------------
-17. CHECK ONLY RESPONSE STATUS CODE
---------------------------------
-PowerShell:
-curl -o NUL -w "%{http_code}" "http://localhost:5000/api"
+=========================================================
+5. LIST ALL USERS
+=========================================================
 
 CMD:
-curl -o NUL -w "%{http_code}" "http://localhost:5000/api"
+curl "http://127.0.0.1:5000/api/users"
 
+POWERSHELL:
+curl 'http://127.0.0.1:5000/api/users'
 
---------------------------------
-18. JSON PRETTY OUTPUT (PowerShell Only)
---------------------------------
-curl http://localhost:5000/api | ConvertFrom-Json | ConvertTo-Json -Depth 10
+EXPECTED:
+[
+  {
+    "id":1,
+    "username":"raghu",
+    "name":"Raghu",
+    "email":"raghu@test.com",
+    "phone":"9999999999",
+    "address":"Hyderabad"
+  }
+]
 
+=========================================================
+6. GET USER BY ID
+=========================================================
 
---------------------------------
-19. TEST AUTH WITH BEARER TOKEN
---------------------------------
-curl -X GET "http://localhost:5000/api/profile" ^
-     -H "Authorization: Bearer <TOKEN>"
+CMD:
+curl "http://127.0.0.1:5000/api/users/1"
 
+POWERSHELL:
+curl 'http://127.0.0.1:5000/api/users/1'
 
---------------------------------
-20. CHECK CORS HEADERS
---------------------------------
-curl -I "http://localhost:5000/api"
+EXPECTED:
+{
+  "id":1,
+  "username":"raghu",
+  "name":"Raghu",
+  "email":"raghu@test.com",
+  "phone":"9999999999",
+  "address":"Hyderabad"
+}
 
+=========================================================
+7. UPDATE USER
+=========================================================
 
-================================
-END OF FILE
-================================
+CMD:
+curl -X PUT "http://127.0.0.1:5000/api/users/1" ^
+  -H "Content-Type: application/json" ^
+  -H "Authorization: Bearer %TOKEN%" ^
+  -d "{\"name\":\"Updated Raghu\",\"address\":\"Bangalore\"}"
+
+POWERSHELL:
+curl -X PUT 'http://127.0.0.1:5000/api/users/1' `
+  -H 'Content-Type: application/json' `
+  -H "Authorization: Bearer $env:TOKEN" `
+  -d '{"name":"Updated Raghu","address":"Bangalore"}'
+
+EXPECTED:
+{"message":"User updated successfully"}
+
+=========================================================
+8. VERIFY UPDATE
+=========================================================
+
+CMD:
+curl "http://127.0.0.1:5000/api/users/1"
+
+POWERSHELL:
+curl 'http://127.0.0.1:5000/api/users/1'
+
+EXPECTED:
+{
+  "id":1,
+  "username":"raghu",
+  "name":"Updated Raghu",
+  "email":"raghu@test.com",
+  "phone":"9999999999",
+  "address":"Bangalore"
+}
+
+=========================================================
+9. LIST USERS (UPDATED)
+=========================================================
+
+CMD:
+curl "http://127.0.0.1:5000/api/users"
+
+POWERSHELL:
+curl 'http://127.0.0.1:5000/api/users'
+
+EXPECTED:
+[
+  {
+    "id":1,
+    "username":"raghu",
+    "name":"Updated Raghu",
+    "email":"raghu@test.com",
+    "phone":"9999999999",
+    "address":"Bangalore"
+  }
+]
+
+=========================================================
+10. DELETE USER
+=========================================================
+
+CMD:
+curl -X DELETE "http://127.0.0.1:5000/api/users/1" ^
+  -H "Authorization: Bearer %TOKEN%"
+
+POWERSHELL:
+curl -X DELETE 'http://127.0.0.1:5000/api/users/1' `
+  -H "Authorization: Bearer $env:TOKEN"
+
+EXPECTED:
+{"message":"User deleted successfully"}
+
+=========================================================
+11. VERIFY DELETE (GET BY ID)
+=========================================================
+
+CMD:
+curl "http://127.0.0.1:5000/api/users/1"
+
+POWERSHELL:
+curl 'http://127.0.0.1:5000/api/users/1'
+
+EXPECTED:
+{"message":"User not found"}
+
+=========================================================
+12. FINAL USERS LIST (SHOULD BE EMPTY)
+=========================================================
+
+CMD:
+curl "http://127.0.0.1:5000/api/users"
+
+POWERSHELL:
+curl 'http://127.0.0.1:5000/api/users'
+
+EXPECTED:
+[]
+
+=========================================================
+END OF FILE — FINAL MASTER VERSION
+=========================================================

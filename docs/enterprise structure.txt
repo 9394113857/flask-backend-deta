@@ -1,0 +1,38 @@
+🔥 As the project grows, blueprint modules grow too
+
+Example real-life structure:
+
+app/
+│
+├── routes/
+│   ├── auth.py
+│   ├── users.py
+│   ├── orders.py
+│   ├── products.py
+│   ├── notifications.py
+│   ├── payments.py
+│   ├── admin.py
+│   └── analytics.py
+│
+├── models/
+│   ├── user.py
+│   ├── order.py
+│   ├── product.py
+│   └── payment.py
+│
+├── services/
+│   ├── auth_service.py
+│   ├── email_service.py
+│   ├── sms_service.py
+│   ├── payment_service.py
+│   └── cache_service.py
+│
+├── utils/
+│   ├── validators.py
+│   ├── helpers.py
+│   └── constants.py
+│
+└── core/
+    ├── config.py
+    ├── extensions.py
+    └── exceptions.py

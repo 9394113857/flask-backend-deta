@@ -1,0 +1,130 @@
+=========================================================
+HOW TO RUN FLASK BACKEND — run.py AND flask run
+=========================================================
+
+This file explains:
+
+• How run.py must be written
+• How to run the backend
+• How to use flask run correctly
+• Commands for Windows / PowerShell / Linux
+• What to do after migrations
+
+---------------------------------------------------------
+1. FINAL run.py FILE (USE THIS EXACT VERSION)
+---------------------------------------------------------
+
+from app import create_app
+
+app = create_app()
+
+if __name__ == "__main__":
+    # Development only
+    app.run(debug=True)
+
+---------------------------------------------------------
+EXPLANATION:
+---------------------------------------------------------
+• Imports your Flask application factory (create_app)
+• Creates "app" instance globally
+• When run directly → starts Flask dev server
+• Railway will use "run:app" for production
+
+---------------------------------------------------------
+2. RUNNING WITH: python run.py
+---------------------------------------------------------
+
+This method works WITHOUT setting FLASK_APP each time.
+
+COMMAND:
+
+python run.py
+
+Server starts at:
+http://127.0.0.1:5000/
+
+---------------------------------------------------------
+3. RUNNING WITH: flask run
+---------------------------------------------------------
+
+If you want to run using the Flask CLI:
+
+STEP 1 — Set environment variable
+(Windows PowerShell)
+   $env:FLASK_APP = "run.py"
+
+(Windows CMD)
+   set FLASK_APP=run.py
+
+(Linux/Mac)
+   export FLASK_APP=run.py
+
+STEP 2 — Start Flask
+   flask run
+
+---------------------------------------------------------
+4. WHICH ONE SHOULD YOU USE?
+---------------------------------------------------------
+
+For DEVELOPMENT:
+   python run.py  
+(Recommended)
+
+For MIGRATIONS:
+   flask db migrate
+   flask db upgrade
+(Requires FLASK_APP=run.py)
+
+For PRODUCTION:
+   Railway uses:
+   gunicorn run:app
+
+---------------------------------------------------------
+5. COMMON ERRORS AND FIXES
+---------------------------------------------------------
+
+ERROR: "Failed to find Flask application"
+FIX: Set FLASK_APP variable:
+     $env:FLASK_APP = "run.py"
+
+ERROR: "ModuleNotFoundError: No module named app"
+FIX: Folder must contain:
+     app/__init__.py
+     app/extensions.py
+     app/models.py
+     app/routes/*.py
+
+ERROR: Server runs but no API route found
+FIX: Check blueprint prefix:
+     app.register_blueprint(auth_bp, url_prefix="/api")
+
+---------------------------------------------------------
+6. AFTER MIGRATIONS, BACKEND IS READY TO RUN
+---------------------------------------------------------
+
+Run:
+python run.py
+
+Test in browser:
+http://127.0.0.1:5000/api/
+
+POSTMAN:
+GET {{base_url}}/          → should show “Flask API running”
+
+---------------------------------------------------------
+7. SUMMARY
+---------------------------------------------------------
+
+python run.py      
+→ Easiest way to run locally
+
+$env:FLASK_APP="run.py"
+flask run
+→ Flask CLI mode
+
+flask db upgrade
+→ Always safe to run after pulling code
+
+=========================================================
+END OF FILE
+=========================================================
