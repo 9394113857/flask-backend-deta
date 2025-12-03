@@ -60,6 +60,15 @@ After fixing:
 git add .
 git commit -m "Resolved merge conflicts"
 
+or
+
+Create a commit (even if empty or no changes):-
+Git allows this ONLY with:
+git commit --allow-empty -m "Force empty commit to trigger CI/CD pipeline"
+
+1. Even if your repo has no new changes, this commit will be created.
+2. Perfect for triggering GitHub Actions / Hoting deploy.
+
 ---------------------------------------------------------
 STEP 6 — Push the updated main branch to GitHub
 (This triggers CI/CD on main)
