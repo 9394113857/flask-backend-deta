@@ -19,7 +19,7 @@ Windows CMD:
 set FLASK_APP=run.py
 
 macOS / Linux:
-export FLASK_APP=run.py
+export FLASK_APP=run.py 
 
 
 
