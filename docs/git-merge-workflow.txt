@@ -1,0 +1,80 @@
+📌 git-merge-workflow.txt
+
+=========================================================
+🔥 GIT MERGE WORKFLOW (FEATURE BRANCH → MAIN)
+=========================================================
+This is the standard flow followed in real projects.
+Save this file. Follow these steps EVERY TIME you work.
+=========================================================
+---------------------------------------------------------
+STEP 0 — Make sure you are on your feature branch
+---------------------------------------------------------
+
+git branch # Shows current branch
+git switch feature/sqlalchemy-migrations # OR git checkout
+
+---------------------------------------------------------
+STEP 1 — Add & Commit all changes in feature branch
+---------------------------------------------------------
+
+git add .
+git commit -m "Completed migrations, API fixes, and testing"
+
+---------------------------------------------------------
+STEP 2 — Push feature branch to remote
+---------------------------------------------------------
+
+git push origin feature/sqlalchemy-migrations
+
+---------------------------------------------------------
+STEP 3 — Switch to MAIN branch
+---------------------------------------------------------
+
+git switch main # OR git checkout main
+
+---------------------------------------------------------
+STEP 4 — Sync your local MAIN with remote MAIN
+(always do this before merging)
+---------------------------------------------------------
+
+git pull origin main
+
+---------------------------------------------------------
+STEP 5 — Merge feature branch into main
+---------------------------------------------------------
+
+git merge feature/sqlalchemy-migrations
+
+---------------------------------------------------------
+⚠️ IF MERGE CONFLICTS APPEAR
+---------------------------------------------------------
+You will see errors like:
+<<<<<<< HEAD
+your code
+=======
+feature branch code
+>>>>>>> feature/sqlalchemy-migrations
+FIX these conflicts inside the files.
+After fixing:
+
+git add .
+git commit -m "Resolved merge conflicts"
+
+---------------------------------------------------------
+STEP 6 — Push the updated main branch to GitHub
+(This triggers CI/CD on main)
+---------------------------------------------------------
+
+git push origin main
+
+---------------------------------------------------------
+STEP 7 — Deployment happens automatically
+---------------------------------------------------------
+• Netlify deploys Angular
+• Railway deploys Flask backend
+• GitHub Actions runs pipelines
+• You receive SUCCESS / FAILURE emails
+DONE ✔
+=========================================================
+END OF FILE
+=========================================================

@@ -1,0 +1,41 @@
+===============================
+VIM MERGE COMMIT MESSAGE STEPS
+===============================
+
+When Git opens Vim during a merge,
+follow these four steps exactly:
+
+--------------------------------
+1️⃣ ENTER INSERT MODE
+--------------------------------
+Type:
+i
+
+--------------------------------
+2️⃣ WRITE YOUR MERGE MESSAGE
+--------------------------------
+Replace the first line with:
+
+Merge: feature/sqlalchemy-migrations into main - resolved conflicts
+
+(You can write any meaningful merge message here.)
+
+--------------------------------
+3️⃣ EXIT INSERT MODE
+--------------------------------
+Press:
+ESC
+
+--------------------------------
+4️⃣ SAVE AND QUIT
+--------------------------------
+Type:
+:wq
+
+--------------------------------
+🎉 DONE
+--------------------------------
+Git will now finish the merge normally.
+Push the changes with:
+
+git push origin main

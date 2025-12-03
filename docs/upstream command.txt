@@ -1,0 +1,8 @@
+Push the branch with --set-upstream flag:
+git push --set-upstream origin feature/sqlalchemy-migrations
+
+1. This will push your local feature/sqlalchemy-migrations branch to the remote origin 
+and set up the upstream relationship.
+
+2. The commit message "Pushing new branch to remote origin" should make it clear 
+that you're pushing a new branch for the first time.
