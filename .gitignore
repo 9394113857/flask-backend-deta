@@ -1,42 +1,79 @@
 # ------------------------------------------------------
-# PYTHON CACHE FILES
+# PYTHON CACHE / BUILD FILES
 # ------------------------------------------------------
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+*.pycache
 
 # ------------------------------------------------------
 # VIRTUAL ENVIRONMENT FOLDERS
 # ------------------------------------------------------
 venv/
 env/
-.venv/
 ENV/
+.venv/
+env.bak/
+venv.bak/
 
 # ------------------------------------------------------
-# ENVIRONMENT VARIABLES (DO NOT PUSH SECRETS)
+# LOCAL ENVIRONMENT VARIABLES
+# (Never push secrets — Railway injects these)
 # ------------------------------------------------------
 .env
 
 # ------------------------------------------------------
-# FLASK INSTANCE FILES (LOCAL ONLY)
+# LOCAL SQLITE DATABASE (DO NOT PUSH)
 # ------------------------------------------------------
-instance/
-app.db          # SQLite database file (local only)
+app.db
+*.db
 
 # ------------------------------------------------------
-# EDITORS / OS FILES
+# FLASK INSTANCE FOLDER (LOCAL-ONLY)
+# ------------------------------------------------------
+instance/
+
+# ------------------------------------------------------
+# EDITOR / OS / IDE FILES
 # ------------------------------------------------------
 .vscode/
 .idea/
 .DS_Store
+Thumbs.db
 
 # ------------------------------------------------------
-# MIGRATIONS - IMPORTANT NOTE:
+# LOG FILES
 # ------------------------------------------------------
-# DO NOT IGNORE MIGRATIONS FOR CI/CD OR TEAM WORK
-# Flask-Migrate needs migration scripts to deploy schema.
+*.log
+logs/
+
+# ------------------------------------------------------
+# COMPILED FILES / DIST
+# ------------------------------------------------------
+build/
+dist/
+
+# ------------------------------------------------------
+# MIGRATIONS
+# IMPORTANT:
+# DO NOT IGNORE MIGRATIONS.
+# THEY ARE REQUIRED FOR PRODUCTION DEPLOYMENTS.
 #
-# So we DO NOT ignore:
-#    migrations/
-#
-# If you ignored this earlier, REMOVE from .gitignore now.
+# So migrations/ MUST stay in the repo.
+# DO NOT add:
+#     migrations/
+# ------------------------------------------------------
+
+# ------------------------------------------------------
+# DOCKER
+# ------------------------------------------------------
+*.dockerfile
+Dockerfile
+
+# ------------------------------------------------------
+# PYTEST / COVERAGE
+# ------------------------------------------------------
+.coverage
+htmlcov/
+pytest_cache/
