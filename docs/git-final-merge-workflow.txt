@@ -1,0 +1,94 @@
+========================================================
+        FINAL COMPANY MERGE WORKFLOW (FULL VERSION)
+========================================================
+
+# -------------------------------------------------------
+# STEP 0 — Ensure you are on your feature branch
+# -------------------------------------------------------
+git checkout feature/sqlalchemy-migrations
+
+
+# -------------------------------------------------------
+# STEP 1 — Sync your feature branch with remote
+# (Prevents “rejected push” errors)
+# -------------------------------------------------------
+git pull --rebase origin feature/sqlalchemy-migrations
+
+# If conflicts → fix manually
+# Then:
+# git add .
+# git rebase --continue
+
+
+
+# -------------------------------------------------------
+# STEP 2 — Do your development work locally
+# -------------------------------------------------------
+# After changes are ready:
+git add .
+git commit -m "Your feature work message here"
+git push origin feature/sqlalchemy-migrations
+
+# (If rejected again, repeat: git pull --rebase → fix → push)
+
+
+
+# -------------------------------------------------------
+# STEP 3 — Switch to MAIN branch
+# (You NEVER merge while feature branch is checked out)
+# -------------------------------------------------------
+git checkout main
+
+
+# -------------------------------------------------------
+# STEP 4 — Pull the latest MAIN from GitHub
+# (Main must be fully fresh before merging)
+# -------------------------------------------------------
+git pull origin main
+
+
+
+# -------------------------------------------------------
+# STEP 5 — Merge feature branch INTO main
+# -------------------------------------------------------
+git merge feature/sqlalchemy-migrations
+
+# If conflicts → fix them, then:
+# git add .
+# git commit
+
+
+
+# -------------------------------------------------------
+# STEP 6 — Push the updated MAIN to GitHub
+# (Main now contains all feature work)
+# -------------------------------------------------------
+git push origin main
+
+
+
+# -------------------------------------------------------
+# STEP 7 — CLEANUP (Real Company Practice)
+# Once feature is merged into main:
+# -------------------------------------------------------
+
+# Delete LOCAL feature branch
+git branch -d feature/sqlalchemy-migrations
+
+# Delete REMOTE feature branch
+git push origin --delete feature/sqlalchemy-migrations
+
+
+
+# -------------------------------------------------------
+# OPTIONAL — Create next feature branch from updated main
+# -------------------------------------------------------
+git checkout main
+git pull origin main
+git checkout -b feature/next-awesome-task
+
+
+
+========================================================
+                END OF MERGE WORKFLOW
+========================================================
